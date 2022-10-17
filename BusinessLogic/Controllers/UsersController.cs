@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BusinessLogic.Models;
 using BusinessLogic.Data;
 using System.Net.WebSockets;
+using System.Text.RegularExpressions;
 
 namespace BusinessLogic.Controllers
 {
@@ -17,10 +18,48 @@ namespace BusinessLogic.Controllers
             _context = context;
         }
 
+        int AmountVowels = 0;
+        int AmountConstants = 0;
+
         [HttpPost]
         public JsonResult CreateUser (UsersInformation Information)
         {
-            if(Information.Id == 0)
+            // Make Full name from First and Last name
+            string FullName = (Information.FirstName + " " + Information.LastName).ToLower();
+            Console.WriteLine(FullName);
+
+            // Check for every charachter in full name
+            foreach (char c in FullName)
+            {
+                // Regex match lowercase a-z
+                var regexItem = new Regex("^[a-z]*$");
+                // Check if Regex is a match 
+                if (!regexItem.IsMatch(c.ToString())) {
+                    continue; // <-- If match = skip with continue
+                }else
+                {
+                    // Vowel checker
+                    bool isVowel = "aeiou".IndexOf(c) >= 0;
+                    if (isVowel) // <-- If vowel
+                    {
+                        AmountVowels++;
+                    }
+                    else
+                    {
+                        AmountConstants++;
+                    }
+                }
+            }
+
+            Console.WriteLine("Amount of vowels: " + AmountVowels);
+            Console.WriteLine("Amount of constants: " + AmountConstants);
+
+            // Place full name in a array
+            char[] charArray = FullName.ToCharArray();
+            Array.Reverse(charArray); // Reverse array
+            Console.WriteLine(charArray); // Print array
+
+            if (Information.Id == 0)
             {
                 _context.Users.Add(Information);
             } else
