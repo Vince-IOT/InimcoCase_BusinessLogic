@@ -9,8 +9,8 @@ namespace BusinessLogic.Models
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        
-        public List<string> SocialSkills { get; set; }
+        [NotMapped]
+        public string[] SocialSkills { get; set; }
 
         public List<SocialAccount> SocialAccounts { get; set; }
     }
